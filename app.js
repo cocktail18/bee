@@ -7,7 +7,7 @@ App({
     i18n.getLanguage()
     this.setTabBarLanguage()
     const $t = i18n.$t()
-    WXAPI.init(CONFIG.subDomain)
+    WXAPI.init2(CONFIG.apiHost, CONFIG.subDomain)
     const that = this;
     // 检测新版本
     const updateManager = wx.getUpdateManager()
