@@ -380,3 +380,14 @@ page {
   color: #ed6a0c;
   padding: 8rpx 0;
 }
+
+.van-price-true {
+  color: goldenrod !important;
+}
+.van-price-false {
+  color: red !important;
+}
+.noVip-price {
+  font-weight: 500;
+  color: rgb(240, 134, 134);
+}

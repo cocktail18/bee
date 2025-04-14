@@ -44,6 +44,13 @@ Page({
   async getUserApiInfo() {
     const res = await WXAPI.userDetail(wx.getStorageSync('token'))
     if (res.code == 0) {
+      // 判断会员
+      if (res.data.base.vipLevel > 0) {
+        res.data.userLevel = {name: this.data.$t.vip.title}
+        wx.setStorageSync('isVip', true)
+      } else {
+        wx.setStorageSync('isVip', false)
+      }
       this.setData({
         apiUserInfoMap: res.data
       });

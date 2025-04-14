@@ -54,12 +54,16 @@
       centered="true"
       lazy-load="true"
       origin-price="{{ (item.originalPrice > 0 && item.originalPrice != item.minPrice) ? item.originalPrice : '' }}"
-      price="{{item.minPrice}}"
+      price="{{isVip?(item.vipPrice>0?item.vipPrice:item.minPrice):item.minPrice}}"
+      price-class="van-price-{{isVip&&item.vipPrice>0}}"
       thumb-mode="aspectFill"
       tag="{{ item.badge ? item.badge : '' }}"
       title="{{item.name}}"
       thumb-link="/pages/goods-details/index?id={{ item.id }}"
       thumb="{{item.pic}}">
+      <view slot="price-top" class="noVip-price">
+        <van-text wx:if="{{isVip && item.vipPrice > 0}}" size="mini">￥{{item.minPrice}}</van-text>
+      </view>
       <view slot="desc">
         <view wx:if="{{ item.miaosha && item.dateStartInt > 0 }}">
           <van-count-down class="count-downno-start" time="{{ item.dateStartInt }}" format="HH时mm分ss秒"></van-count-down>
@@ -138,7 +142,7 @@
   <view class="blank"></view>
   <view class="add-bar">
     <view class="add-box">
-      <view class="price"><text>¥</text>{{curGoodsMap.price}}</view>
+      <view class="price"><text>¥</text>{{isVip && curGoodsMap.vipPrice>0 ?curGoodsMap.vipPrice:curGoodsMap.price}}</view>
       <van-stepper value="{{ curGoodsMap.number }}" min="{{curGoodsMap.basicInfo.minBuyNumber}}" max="{{ buyNumMax }}" bind:change="goodsStepChange"/>
     </view>
     <view class="add-cart">
@@ -171,7 +175,7 @@
       </view>
     </view>
     <view class="r">
-      <view class="price">¥{{ item.price }}</view>
+      <view class="price">¥{{ isVip&&item.vipPrice>0?item.vipPrice:item.price }}</view>
       <van-stepper value="{{ item.number }}" min="0" async-change disable-input data-idx="{{index}}" bind:change="cartStepChange"/>
     </view>
   </view>
@@ -226,10 +230,11 @@
 </view>
 </van-popup> 
 
-<van-overlay show="{{ !scanDining && showCouponPop }}" bind:click="couponOverlayClick">
+<van-overlay show="{{ showCouponPop }}" bind:click="couponOverlayClick">
   <view class="couponOverlay-container">
-    <image src="/images/coupon.png" bindtap="couponImageClick"></image>
+    <image src="/images/coupon.png" mode="widthFix" style="width: 80%;" bindtap="couponImageClick"></image>
   </view>
+
 </van-overlay>
 
 

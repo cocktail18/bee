@@ -23,8 +23,10 @@ Page({
       type: options.type,
       shop_join_open: wx.getStorageSync('shop_join_open')
     })
+    this.fetchShops(null, null, '')
   },
   onShow: function () {
+    const that = this
     wx.getLocation({
       type: 'wgs84', //wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
       success: (res) => {
@@ -33,27 +35,45 @@ Page({
         this.fetchShops(res.latitude, res.longitude, '')
       },
       fail(e){
-        console.error(e)
-        AUTH.checkAndAuthorize('scope.userLocation')
+         // 定位失败时也获取店铺列表，但不传入位置参数
+         this.fetchShops(null, null, '')
       }
     })    
   },
   async fetchShops(latitude, longitude, kw){
-    const res = await WXAPI.fetchShops({
-      curlatitude: latitude,
-      curlongitude: longitude,
-      nameLike: kw
-    })
-    if (res.code == 0) {
-      res.data.forEach(ele => {
-        ele.distance = ele.distance.toFixed(1) // 距离保留3位小数
-      })
-      this.setData({
-        shops: res.data
-      })
-    } else {
-      this.setData({
-        shops: null
+    const params = {
+       nameLike: kw || ''
+    }
+    // 如果有位置信息，添加到请求参数中
+    if (latitude && longitude) {
+      params.curlatitude = latitude
+      params.curlongitude = longitude
+    }
+    try {
+      const res = await WXAPI.fetchShops(params)
+      if (res.code == 0) {
+        if (latitude && longitude) {
+          res.data.forEach(ele => {
+            ele.distance = ele.distance.toFixed(1)
+          })
+        } else {
+          res.data.forEach(ele => {
+            ele.distance = '-'
+          })
+        }
+        this.setData({
+          shops: res.data
+        })
+      } else {
+        this.setData({
+          shops: null
+        })
+      }
+    } catch (error) {
+      console.error('获取店铺列表失败:', error)
+      wx.showToast({
+        title: '获取店铺列表失败',
+        icon: 'none'
       })
     }
   },

@@ -1,3 +1,4 @@
+<wxs module="filters" src="../../utils/time.wxs"></wxs>
 <van-sticky>
   <van-tabs bind:change="tabClick">
     <van-tab wx:for="{{ tabs[language] }}" wx:key="index" title="{{item}}"></van-tab>
@@ -14,8 +15,8 @@
     </view>
     <view class="price">
       <view class="tj">{{ $t.coupons.over }} {{item.moneyHreshold}}</view>
-      <view wx:if="{{ item.moneyType == 0 }}" class="amount"><text>￥</text>{{item.moneyMin}}</view>
-      <view wx:if="{{ item.moneyType == 1 }}" class="amount"><text></text>{{item.moneyMin}}<text>%</text></view>
+      <view wx:if="{{ item.moneyType == 0 }}" class="amount"><text>￥</text>{{item.money}}</view>
+      <view wx:if="{{ item.moneyType == 1 }}" class="amount"><text></text>{{filters.formatNumber(item.money)*100}}<text>%</text></view>
     </view>
     <view class="btn" bindtap="getCounpon" data-id="{{item.id}}" data-pwd="{{item.pwd}}">{{ $t.coupons.btn }}</view>
   </view>
@@ -28,9 +29,9 @@
       <view class="n">{{item.name}}</view>
     </view>
     <view class="price">
-      <view class="tj">({{item.dateEnd}} {{ $t.coupons.expire }})  {{ $t.coupons.over }} {{item.moneyHreshold}}</view>
+      <view class="tj">({{filters.parseTime(item.expiryMillis,'date')}} {{ $t.coupons.expire }}) {{ $t.coupons.over }} {{item.moneyHreshold}}</view>
       <view wx:if="{{ item.moneyType == 0 }}" class="amount"><text>￥</text>{{item.money}}</view>
-      <view wx:if="{{ item.moneyType == 1 }}" class="amount"><text></text>{{item.money}}<text>%</text></view>
+      <view wx:if="{{ item.moneyType == 1 }}" class="amount"><text></text>{{filters.formatNumber(item.money)*100}}<text>%</text></view>
     </view>
     <view class="btn" bindtap="touse" data-item="{{ item }}">{{ $t.coupons.toUse }}</view>
   </view>
@@ -45,7 +46,7 @@
     <view class="price">
       <view class="tj disabled2">{{ $t.coupons.over }} {{item.moneyHreshold}}</view>
       <view wx:if="{{ item.moneyType == 0 }}" class="amount disabled2"><text class="disabled2">￥</text>{{item.money}}</view>
-      <view wx:if="{{ item.moneyType == 1 }}" class="amount disabled2"><text class="disabled2"></text>{{item.money}}<text class="disabled2">%</text></view>
+      <view wx:if="{{ item.moneyType == 1 }}" class="amount disabled2"><text class="disabled2"></text>{{filters.formatNumber(item.money)*100}}<text class="disabled2">%</text></view>
     </view>
     <view class="btn">{{ item.statusStr }}</view>
   </view>

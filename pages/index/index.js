@@ -18,6 +18,11 @@ Page({
     menuButtonBoundingClientRect: wx.getMenuButtonBoundingClientRect(),
   },  
   onLoad: function (e) {
+
+     // 清除店铺缓存
+  wx.removeStorageSync('shopInfo')
+  wx.removeStorageSync('shopIds')
+  
     getApp().initLanguage(this)
     const _data = {}
     // 测试拼团入口
@@ -83,6 +88,11 @@ Page({
         mallName
       })
     }
+    const isVip = wx.getStorageSync('isVip')
+    this.setData({
+      isVip
+    })
+    
     APP.configLoadOK = () => {
       const mallName = wx.getStorageSync('mallName')
       if (mallName) {
@@ -146,20 +156,43 @@ Page({
     wx.getLocation({
       type: 'wgs84', //wgs84 返回 gps 坐标，gcj02 返回可用于 wx.openLocation 的坐标
       success: (res) => {
-        // console.log(res)
         this.data.latitude = res.latitude
         this.data.longitude = res.longitude
         this.fetchShops(res.latitude, res.longitude, '')
       },      
       fail: (e) => {
         if (e.errMsg.indexOf('fail auth deny') != -1) {
-          AUTH.checkAndAuthorize('scope.userLocation')
-        } else {
+          // 定位权限被拒绝，提供友好提示
           wx.showModal({
-            confirmText: this.data.$t.common.confirm,
-            cancelText: this.data.$t.common.cancel,
-            content: e.errMsg,
-            showCancel: false
+            title: this.data.$t.common.tips || '提示',
+            content: '为了给您推荐最近的门店，需要获取您的位置信息',
+            confirmText: this.data.$t.common.confirm || '去开启',
+            cancelText: this.data.$t.common.cancel || '暂不开启',
+            success: (res) => {
+              if (res.confirm) {
+                AUTH.checkAndAuthorize('scope.userLocation')
+              } else {
+                // 用户选择不开启定位，跳转到店铺列表
+                wx.navigateTo({
+                  url: '/pages/shop/select?type=index'
+                })
+              }
+            }
+          })
+        } else {
+          // 其他定位错误
+          wx.showModal({
+            title: this.data.$t.common.tips || '提示',
+            content: '无法获取您的位置，是否手动选择门店？',
+            confirmText: this.data.$t.common.confirm || '去选择',
+            cancelText: this.data.$t.common.cancel || '取消',
+            success: (res) => {
+              if (res.confirm) {
+                wx.navigateTo({
+                  url: '/pages/shop/select?type=index'
+                })
+              }
+            }
           })
         }
       }
@@ -170,9 +203,12 @@ Page({
       curlatitude: latitude,
       curlongitude: longitude,
       nameLike: kw,
-      pageSize: 1
+      orderBy: 'distance',  // 按距离排序
+    sortBy: 'asc'        // 升序排列
     })
     if (res.code == 0) {
+      res.data.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
+
       res.data.forEach(ele => {
         ele.distance = ele.distance.toFixed(1) // 距离保留3位小数
       })
@@ -407,6 +443,9 @@ Page({
         price = res.data.price
         if (this.data.shopType == 'toPingtuan') {
           price = res.data.pingtuanPrice
+        } else if (wx.getStorageSync('isVip')) {
+          console.log('isVip')
+          price = res.data.vipPrice > 0?res.data.vipPrice:res.data.price
         }
         originalPrice = res.data.originalPrice
         totalScoreToPay = res.data.score
@@ -669,6 +708,7 @@ Page({
     }
     wx.hideTabBar()
     res.data.price = res.data.basicInfo.minPrice
+    res.data.vipPrice = res.data.basicInfo.vipPrice
     res.data.number = res.data.basicInfo.minBuyNumber
     const _data = {
       curGoodsMap: res.data,

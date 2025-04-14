@@ -37,7 +37,11 @@
     "lazyloadPlaceholderEnable": false,
     "useStaticServer": true,
     "ignoreUploadUnusedFiles": true,
-    "condition": false
+    "condition": false,
+    "compileWorklet": false,
+    "localPlugins": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
   "simulatorType": "wechat",
@@ -61,9 +65,10 @@
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "appid": "wxeae6fe143af7d025",
+  "appid": "wxf9be667c59929008",
   "packOptions": {
     "ignore": [],
     "include": []
-  }
+  },
+  "libVersion": "3.4.10"
 }

@@ -1,0 +1,61 @@
+var filter = {
+  formatNumber: function (n) {
+      n = n.toString()
+      return n[1] ? n : '0' + n
+    },
+  //写法一：
+  parseTime: function (time, type) {
+      if (time == null || type == '') {
+        return ''
+      }
+      if (arguments.length === 0) {
+        return null
+      }
+      var date = getDate(time);//在wxs中不能使用new Date()来处理日期
+      var y = date.getFullYear();
+      var m = filter.formatNumber(date.getMonth() + 1);
+      var d = filter.formatNumber(date.getDate());
+      var h = filter.formatNumber(date.getHours());
+      var i = filter.formatNumber(date.getMinutes());
+      var s = filter.formatNumber(date.getSeconds());
+      var a = filter.formatNumber(date.getDay());
+      var time_str = "";
+      if (type == 'month') {
+        time_str = y + '-' + m;
+      } else if (type == 'date') {
+        time_str = y + '-' + m + '-' + d;
+      } else if (type == 'datetime') {
+        time_str = y + '-' + m + '-' + d + ' ' + h + ':' + i + ':' + s;
+      } else if (type == 'onlyMonth') {
+        time_str = m;
+      } else if (type == 'onlyYear') {
+        time_str = y;
+      }
+      return time_str
+    },
+    //写法二：
+    //用法 <text>{{filters.formatDate(current,'Y-M-D h:m:s')}}</text>
+    parseTime2: function (time, format) {
+      if (time == null || format == '' || time == "" || time == undefined) {
+        return ''
+      }
+      if (arguments.length === 0) {
+        return null
+      }
+      var formateArr = ['Y', 'M', 'D', 'h', 'm', 's'], arr = [], date = getDate(time);
+      arr.push(date.getFullYear());//Y
+      arr.push(filter.formatNumber(date.getMonth() + 1));//M
+      arr.push(filter.formatNumber(date.getDate()));//D
+      arr.push(filter.formatNumber(date.getHours()));//h
+      arr.push(filter.formatNumber(date.getMinutes()));//m
+      arr.push(filter.formatNumber(date.getSeconds()));//s
+      for (var i = 0; i < arr.length; i++) {
+        format = format.replace(formateArr[i], arr[i])
+      }
+      return format
+    },
+}
+module.exports = {
+  parseTime: filter.parseTime,
+  formatNumber: filter.formatNumber
+}

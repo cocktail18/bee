@@ -980,6 +980,12 @@ module.exports = {
       token: token
     });
   },
+  balance_pay: function balance_pay(token, orderId) {
+    return request('/order/balance_pay', true, 'post', {
+      orderId: orderId,
+      token: token
+    });
+  },
   orderPayV2: function orderPayV2(data) {
     return request('/order/pay', true, 'post', data);
   },

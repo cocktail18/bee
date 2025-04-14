@@ -77,7 +77,7 @@ Page({
     wx.showLoading({
       title: '',
     })
-    WXAPI.coupons().then(function (res) {
+    WXAPI.coupons({token: wx.getStorageSync('token')}).then(function (res) {
       wx.hideLoading({
         success: (res) => {},
       })

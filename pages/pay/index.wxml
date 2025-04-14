@@ -5,14 +5,14 @@
 			<van-icon name="shop-collect-o" color="{{peisongType == 'zq' ? '#fff' : '#333'}}" />
 			<view class="ziqu-1">{{ $t.index.pickup }}</view>
 		</view>
-		<view class="peisong ziqu {{peisongType == 'kd' ? 'active' : ''}}" bindtap="selected" data-pstype="kd">
-			<van-icon name="logistics" color="{{peisongType == 'kd' ? '#fff' : '#333'}}" />
+		<view class="peisong ziqu {{peisongType == 'pszq' ? 'active' : ''}}" bindtap="selected" data-pstype="pszq">
+			<van-icon name="logistics" color="{{peisongType == 'pszq' ? '#fff' : '#333'}}" />
 			<view class="ziqu-1">{{ $t.index.Delivery }}</view>
 		</view>
 	</view>
 	<van-divider dashed />
 	<!-- 地址 -->
-	<view class="address-box" wx:if="{{peisongType == 'kd'}}">
+	<view class="address-box" wx:if="{{peisongType == 'pszq'}}">
 		<view class="add-address" wx:if="{{!curAddressData}}" bindtap="addAddress">
 			<van-icon name="add-o" color="#e64340" size="48rpx" />
 			<view>{{ $t.pay.Addaddress }}</view>
@@ -98,10 +98,10 @@
 	wx:if="{{ nick && avatarUrl }}"
 	price="{{ amountReal*100 }}"
   label="{{ $t.PickingUp.total }}"
-	button-text="{{peisongType == 'kd' && amountReal < shopInfo.serviceAmountMin ? ('￥' + shopInfo.serviceAmountMin + $t.pay.qisong) : $t.order.toPayTap }}"
+	button-text="{{peisongType == 'pszq' && amountReal < shopInfo.serviceAmountMin ? ('￥' + shopInfo.serviceAmountMin + $t.pay.qisong) : $t.order.toPayTap }}"
 	bind:submit="goCreateOrder"
 	button-class="pay-btn"
-	disabled="{{(peisongType == 'kd' && amountReal < shopInfo.serviceAmountMin) || submitLoding }}"
+	disabled="{{(peisongType == 'pszq' && amountReal < shopInfo.serviceAmountMin) || submitLoding }}"
 />
 <van-submit-bar
   wx:else

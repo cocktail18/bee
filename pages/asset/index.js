@@ -85,6 +85,7 @@ Page({
     const postData = {
       token: wx.getStorageSync('token'),
       money: money,
+      shopId: wx.getStorageSync('shopInfo').id,
       payName: "在线充值",
       remark: "在线充值",
     }

@@ -40,16 +40,16 @@
 <view class="my-bar1">
 	<van-cell icon="sign" title="{{ $t.my.signDaily }}" size="large" is-link url="/pages/sign/index" />
 	<van-cell wx:if="{{canHX}}" icon="qr" title="{{ $t.my.scanHx }}" size="large" is-link bind:click="scanOrderCode" />
-	<van-cell icon="medal-o" title="{{ $t.vip.title }}" size="large" is-link url="/pages/member-center/index" />
-	<van-cell icon="clock-o" title="{{ $t.booking.title }}" size="large" is-link url="/pages/booking/index" />
+	<!--<van-cell icon="medal-o" title="{{ $t.vip.title }}" size="large" is-link url="/pages/member-center/index" />
+	<van-cell icon="clock-o" title="{{ $t.booking.title }}" size="large" is-link url="/pages/booking/index" />-->
 	<van-cell icon="gold-coin-o" title="{{ $t.my.youhuimaidan }}" size="large" is-link url="/pages/youhui-pay/index" />
 	<van-cell icon="orders-o" title="{{ $t.order.title }}" size="large" is-link url="/pages/all-orders/index" />
 	<van-cell icon="location-o" title="{{ $t.ad_index.title }}" size="large" is-link url="/pages/ad/index" />
 	<van-cell icon="info-o" title="{{ $t.my.aboutUs }}" size="large" is-link url="/pages/about/index" />
   <van-cell icon="service-o" wx:if="{{ customerServiceType == 'QW' }}" title="{{ $t.my.Contact }}" size="large" is-link bind:click="customerService" />
   <van-cell icon="points" title="{{ $t.my.clearStorage }}" size="large" is-link bind:click="clearStorage" />
-	<van-cell icon="records" title="{{ $t.feedback.title }}" is-link url="/pages/my/feedback" />
-	<van-cell icon="manager-o" title="{{ $t.auth.goAdmin }}" is-link bind:tap="goadmin" />
+	<!--<van-cell icon="records" title="{{ $t.feedback.title }}" is-link url="/pages/my/feedback" />
+	 <van-cell icon="manager-o" title="{{ $t.auth.goAdmin }}" is-link bind:tap="goadmin" /> -->
 </view>
 <view class="version">v{{version}}</view>
 

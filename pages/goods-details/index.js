@@ -118,7 +118,7 @@ Page({
       if (goodsDetailRes.data.properties) {
         that.setData({
           hasMoreSelect: true,
-          selectSizePrice: goodsDetailRes.data.basicInfo.minPrice,
+          selectSizePrice: goodsDetailRes.data.basicInfo.vipPrice>0?goodsDetailRes.data.basicInfo.vipPrice:goodsDetailRes.data.basicInfo.minPrice,
           selectSizeOPrice: goodsDetailRes.data.basicInfo.originalPrice,
           totalScoreToPay: goodsDetailRes.data.basicInfo.minScore
         });
