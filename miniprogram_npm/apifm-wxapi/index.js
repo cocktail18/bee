@@ -1457,6 +1457,9 @@ module.exports = {
   modifyUserInfo: function modifyUserInfo(data) {
     return request('/user/modify', true, 'post', data);
   },
+  modifyUserInfoV2: (data) => {
+    return request('https://common.apifm.com/' + subDomain + '/user/modify', false, 'post', data)
+  },
   bindSaleman: function bindSaleman(data) {
     return request('/user/bindSaleman', true, 'post', data);
   },
@@ -2320,6 +2323,15 @@ module.exports = {
   },
   cardExchangeFromPwd: function cardExchangeFromPwd(data) {
     return request('/card/exchange', true, 'post', data);
+  },
+  cardShareOpen: data => {
+    return request('/card/share/open', true, 'post', data)
+  },
+  cardShareClose: data => {
+    return request('/card/share/close', true, 'post', data)
+  },
+  cardShareFetch: data => {
+    return request('/card/share/fetch', true, 'post', data)
   },
   // 收藏卡片
   collectCardHis: function collectCardHis(data) {

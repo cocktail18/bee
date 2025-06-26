@@ -6,28 +6,73 @@ APP.configLoadOK = () => {
   })
 }
 const wxbarcode = require('wxbarcode')
-const wxpay = require('../../utils/pay.js')
 
 Page({
     data:{
       
     },
-    onLoad:function(e){
+    onLoad(e){
       getApp().initLanguage(this)
       wx.setNavigationBarTitle({
         title: this.data.$t.order.detail,
       })
-      // e.id = 601144
+      // e.id = 1234
+      // e.payOrderNo = 'ZF2411231847541110'
       this.setData({
-        orderId: e.id
+        orderId: e.id,
+        payOrderNo: e.payOrderNo,
+      })
+      if (e.payOrderNo) {
+        this.payLogs()
+      }
+    },
+    onShow : function () {
+      this.orderDetail()
+    },
+    async payLogs() {
+      wx.showLoading({
+        title: '',
+      })
+      const res = await WXAPI.payLogs({
+        token: wx.getStorageSync('token'),
+        orderNo: this.data.payOrderNo
+      })
+      wx.hideLoading()
+      if (res.code != 0) {
+        wx.showModal({
+          content: res.msg,
+          showCancel: false
+        })
+        return
+      }
+      const nextAction = res.data[0].nextAction
+      if(!nextAction) {
+        wx.navigateTo({
+          url: '/pages/asset/index',
+        })
+        return
+      }
+      const _nextAction = JSON.parse(nextAction)
+      if (_nextAction.type != 0) {
+        wx.navigateTo({
+          url: '/pages/asset/index',
+        })
+        return
+      }
+      this.setData({
+        orderId: _nextAction.id,
       })
       this.orderDetail()
     },
-    onShow : function () {
-      
-    },
     async orderDetail() {
+      if (!this.data.orderId) {
+        return
+      }
+      wx.showLoading({
+        title: '',
+      })
       const res = await WXAPI.orderDetail(wx.getStorageSync('token'), this.data.orderId)
+      wx.hideLoading()
       if (res.code != 0) {
         wx.showModal({
           confirmText: this.data.$t.common.confirm,
@@ -80,8 +125,30 @@ Page({
         })
       } else {
         // 微信支付
-        wxpay.wxpay('order', needPay, this.data.orderDetail.orderInfo.id, "/pages/all-orders/index");
+        this.setData({
+          paymentShow: true,
+          money: needPay,
+          orderId: this.data.orderDetail.orderInfo.id,
+          nextAction: {
+            type: 0,
+            id: this.data.orderDetail.orderInfo.id
+          }
+        })
       }
+    },
+    paymentOk(e) {
+      console.log(e.detail); // 这里是组件里data的数据
+      this.setData({
+        paymentShow: false
+      })
+      wx.redirectTo({
+        url: '/pages/all-orders/index',
+      })
+    },
+    paymentCancel() {
+      this.setData({
+        paymentShow: false
+      })
     },
     callshop() {
       wx.makePhoneCall({

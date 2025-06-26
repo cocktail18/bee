@@ -58,7 +58,7 @@ App({
         wx.hideToast()
       }
     })
-    WXAPI.queryConfigBatch('mallName,myBg,mapPos,order_hx_uids,subscribe_ids,share_profile,zxdz,admin_uids,shop_goods_split,QQ_MAP_KEY,shop_join_open,create_order_select_time,packaging_fee,customerServiceChatCorpId,customerServiceChatUrl').then(res => {
+    WXAPI.queryConfigBatch('mallName,myBg,mapPos,order_hx_uids,subscribe_ids,share_profile,zxdz,admin_uids,shop_goods_split,QQ_MAP_KEY,shop_join_open,create_order_select_time,packaging_fee,customerServiceChatCorpId,customerServiceChatUrl,alipay,share_pic').then(res => {
       if (res.code == 0) {
         res.data.forEach(config => {
           wx.setStorageSync(config.key, config.value);
@@ -77,14 +77,22 @@ App({
       } else {
         AUTH.checkHasLogined().then(isLogined => {
           if (!isLogined) {
-            AUTH.authorize()
+            AUTH.authorize().then(() => {
+              this.getUserApiInfo()
+            })
+          } else {
+            this.getUserApiInfo()
           }
         })
       }
     } else {
       AUTH.checkHasLogined().then(isLogined => {
         if (!isLogined) {
-          AUTH.authorize()
+          AUTH.authorize().then(() => {
+            this.getUserApiInfo()
+          })
+        } else {
+          this.getUserApiInfo()
         }
       })
     }
@@ -172,6 +180,21 @@ App({
         throw new Error("not a valid num")
       }
       return num.toFixed(decimalPlaces)
+    }
+  },
+  async getUserApiInfo() {
+    const token = wx.getStorageSync('token')
+    if (!token) {
+      return null
+    }
+    // https://www.yuque.com/apifm/nu0f75/zgf8pu
+    const res = await WXAPI.userDetail(token)
+    if (res.code == 0) {
+      this.globalData.apiUserInfoMap = res.data
+      if (this.getUserDetailOK) {
+        this.getUserDetailOK(res.data)
+      }
+      return res.data
     }
   },
   globalData: {

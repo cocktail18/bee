@@ -43,7 +43,6 @@ Page({
     }
   },
   async goPayOrder() {
-    const _this = this
     // token 需要使用买单这个用户的token，而不是当前餐桌的token
     const code = await AUTH.wxaCode()
     let res = await WXAPI.authorize({
@@ -58,49 +57,27 @@ Page({
       })
       return
     }
-    const token = res.data.token
-    const nextAction = {
-      type: 9,
-      orderId: this.data.orderInfo.id
-    }
-    const postData = {
-      token,
+    wx.setStorageSync('payToken', res.data.token) // 支付用户的token
+    this.setData({
+      paymentShow: true,
       money: this.data.orderInfo.amountReal,
-      remark: "堂食买单",
-      nextAction: JSON.stringify(nextAction)
-    }
-    res = await WXAPI.wxpay(postData)
-    if (res.code != 0) {
-      wx.showModal({
-        confirmText: this.data.$t.common.confirm,
-        cancelText: this.data.$t.common.cancel,
-        content: JSON.stringify(res),
-        showCancel: false
-      })
-      return
-    }
-    // 发起支付
-    wx.requestPayment({
-      timeStamp: res.data.timeStamp,
-      nonceStr: res.data.nonceStr,
-      package: res.data.package,
-      signType: res.data.signType,
-      paySign: res.data.paySign,
-      fail: function (aaa) {
-        console.error(aaa)
-        wx.showToast({
-          title: aaa
-        })
-      },
-      success: function () {
-        // 提示支付成功
-        wx.showToast({
-          title: _this.data.$t.asset.success
-        })
-        _this.setData({
-          paySuccess: true
-        })
+      nextAction: {
+        // https://www.yuque.com/apifm/doc/aetmlb#8tiFW
+        type: 9,
+        orderId: this.data.orderInfo.id
       }
+    })
+  },
+  paymentOk(e) {
+    console.log(e.detail); // 这里是组件里data的数据
+    this.setData({
+      paymentShow: false,
+      paySuccess: true
+    })
+  },
+  paymentCancel() {
+    this.setData({
+      paymentShow: false
     })
   },
 })

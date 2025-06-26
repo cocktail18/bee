@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/home/index",
     "pages/index/index",
     "pages/all-orders/index",
     "pages/my/index",
@@ -28,7 +29,12 @@
     "pages/cart/index",
     "pages/cart/order",
     "pages/goods-details/index",
-    "pages/goods/list"
+    "pages/goods/list",
+    "pages/card/index",
+    "pages/card/logs",
+    "pages/card/exchange",
+    "pages/card/send",
+    "pages/card/receive"
   ],
   "requiredPrivateInfos": [
     "getLocation",
@@ -46,6 +52,12 @@
     "selectedColor": "#e64340",
     "backgroundColor": "#fff",
     "list": [
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "images/nav/home-off.png",
+        "selectedIconPath": "images/nav/home-on.png",
+        "text": "首页"
+      },
       {
         "pagePath": "pages/index/index",
         "iconPath": "images/nav/index-off.png",
@@ -79,6 +91,7 @@
   },
   "usingComponents": {
     "parser":"/components/parser.20200731.min/parser",
+    "payment": "/components/payment/index",
     "van-button": "@vant/weapp/button/index",
     "van-sidebar": "@vant/weapp/sidebar/index",
     "van-sidebar-item": "@vant/weapp/sidebar-item/index",
@@ -114,7 +127,8 @@
     "van-count-down": "@vant/weapp/count-down/index",
     "van-progress": "@vant/weapp/progress/index",
     "van-radio": "@vant/weapp/radio/index",
-    "van-radio-group": "@vant/weapp/radio-group/index"
+    "van-radio-group": "@vant/weapp/radio-group/index",
+    "van-sticky": "@vant/weapp/sticky/index"
   },
   "sitemapLocation": "sitemap.json"
 }
